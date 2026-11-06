@@ -2,6 +2,8 @@
 #![no_std]
 use core::panic::PanicInfo;
 
+mod vga_buffer;
+
 // Panic function returns nothing by using !
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
