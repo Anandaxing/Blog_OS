@@ -9,6 +9,7 @@ impl ColorCode {
   }
 }
 
+#[repr(u8)]
 pub enum Color {
   Black = 0,
   Blue = 1,
