@@ -1,4 +1,5 @@
 use volatile::Volatile;
+use core::fmt;
 
 #[allow(dead_code)] // Disable warning for each unused variant 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)] // we enable copy semantics for the type and make it printable and comparable
@@ -91,7 +92,16 @@ impl Writer {
   }
 }
 
+// To support rust's formatting macros so that we can easily print different types like integers of floats.
+impl fmt::Write for Writer {
+  fn write_str(&mut self, s: &str) -> fmt::Result {
+    self.write_string(s);
+    Ok(())
+  }
+}
+
 pub fn print_something() {
+  use core::fmt::Write;
   let mut writer = Writer {
     column_position: 0,
     color_code: ColorCode::new(Color::Yellow, Color::Black),
@@ -101,4 +111,6 @@ pub fn print_something() {
   writer.write_byte(b'H');
   writer.write_string("ello dede");
   writer.write_string("koko");
+  // The write! call returns a Result which causes a warning if not used, so we call the unwrap method on it, which panics if an error occurs. 
+  write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
 }
