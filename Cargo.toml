@@ -7,3 +7,8 @@ edition = "2024"
 bootloader = "0.9"
 # to use volatile writes for the VGA buffer
 volatile = "0.2.6"
+
+[dependencies.lazy_static]
+version = "1.0"
+# we need spin no std since we don't link the standard library
+features = ["spin_no_std"] 
