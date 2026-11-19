@@ -131,3 +131,9 @@ pub fn print_something() {
   // The write! call returns a Result which causes a warning if not used, so we call the unwrap method on it, which panics if an error occurs. 
   write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
 }
+
+pub static WRITER: Writer = Writer {
+  column_position: 0,
+  color_code: ColorCode::new(Color::Yellow, Color::Black),
+  buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+};
