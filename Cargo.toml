@@ -7,6 +7,8 @@ edition = "2024"
 bootloader = "0.9"
 # to use volatile writes for the VGA buffer
 volatile = "0.2.6"
+# to use a spinning mutex
+spin = "0.5.2"
 
 [dependencies.lazy_static]
 version = "1.0"
