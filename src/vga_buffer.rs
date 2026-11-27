@@ -1,5 +1,7 @@
 use volatile::Volatile;
 use core::fmt;
+use lazy_static::lazy_static;
+use spin::Mutex;
 
 #[allow(dead_code)] // Disable warning for each unused variant 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)] // we enable copy semantics for the type and make it printable and comparable
@@ -130,4 +132,31 @@ pub fn print_something() {
   writer.write_string("koko");
   // The write! call returns a Result which causes a warning if not used, so we call the unwrap method on it, which panics if an error occurs. 
   write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
+}
+
+lazy_static! {
+  pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+    column_position: 0,
+    color_code: ColorCode::new(Color::Yellow, Color::Black),
+    buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+  });
+}
+
+// A rust macro is a compile-time text replacement shortcut that automatically rewrites the short code into a full, standard function call before the program runs, so at runtime it behaves just like a regular function. 
+
+#[macro_export]
+macro_rules! print {
+  ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)));
+}
+
+#[macro_export]
+macro_rules! println {
+  () => ($crate::print!("\n"));
+  ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+}
+
+#[doc(hiddden)]
+pub fn _print(args: fmt::Arguments) {
+  use core::fmt::Write;
+  WRITER.lock().write_fmt(args).unwrap();
 }
