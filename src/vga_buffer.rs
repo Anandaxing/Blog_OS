@@ -142,6 +142,8 @@ lazy_static! {
   });
 }
 
+// A rust macro is a compile-time text replacement shortcut that automatically rewrites the short code into a full, standard function call before the program runs, so at runtime it behaves just like a regular function. 
+
 #[macro_export]
 macro_rules! print {
   ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)));
